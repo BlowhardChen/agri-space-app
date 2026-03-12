@@ -1,39 +1,43 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- */
+import React from 'react';
+import { NavigationContainer } from '@react-navigation/native';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { Ionicons } from '@expo/vector-icons';
+import MapScreen from './src/screens/MapScreen';
+import FieldScreen from './src/screens/FieldScreen';
+import TaskScreen from './src/screens/TaskScreen';
+import ProfileScreen from './src/screens/ProfileScreen';
 
-import {NewAppScreen} from "@react-native/new-app-screen";
-import {StatusBar, StyleSheet, useColorScheme, View} from "react-native";
-import {SafeAreaProvider, useSafeAreaInsets} from "react-native-safe-area-context";
+const Tab = createBottomTabNavigator();
 
-function App() {
-  const isDarkMode = useColorScheme() === "dark";
-
+export default function App() {
   return (
-    <SafeAreaProvider>
-      <StatusBar barStyle={isDarkMode ? "light-content" : "dark-content"} />
-      <AppContent />
-    </SafeAreaProvider>
+    <NavigationContainer>
+      <Tab.Navigator
+        screenOptions={({ route }) => ({
+          tabBarIcon: ({ focused, color, size }) => {
+            let iconName: keyof typeof Ionicons.glyphMap = 'home';
+
+            if (route.name === 'Map') {
+              iconName = focused ? 'map' : 'map-outline';
+            } else if (route.name === 'Fields') {
+              iconName = focused ? 'grid' : 'grid-outline';
+            } else if (route.name === 'Tasks') {
+              iconName = focused ? 'list' : 'list-outline';
+            } else if (route.name === 'Profile') {
+              iconName = focused ? 'person' : 'person-outline';
+            }
+
+            return <Ionicons name={iconName} size={size} color={color} />;
+          },
+          tabBarActiveTintColor: 'blue',
+          tabBarInactiveTintColor: 'gray',
+        })}
+      >
+        <Tab.Screen name="Map" component={MapScreen} options={{ title: '地图' }} />
+        <Tab.Screen name="Fields" component={FieldScreen} options={{ title: '地块' }} />
+        <Tab.Screen name="Tasks" component={TaskScreen} options={{ title: '任务' }} />
+        <Tab.Screen name="Profile" component={ProfileScreen} options={{ title: '我的' }} />
+      </Tab.Navigator>
+    </NavigationContainer>
   );
 }
-
-function AppContent() {
-  const safeAreaInsets = useSafeAreaInsets();
-
-  return (
-    <View style={styles.container}>
-      <NewAppScreen templateFileName="App.tsx" safeAreaInsets={safeAreaInsets} />
-    </View>
-  );
-}
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-});
-
-export default App;
