@@ -1,43 +1,61 @@
-import React from 'react';
-import { NavigationContainer } from '@react-navigation/native';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { Ionicons } from '@expo/vector-icons';
-import MapScreen from './src/screens/MapScreen';
-import FieldScreen from './src/screens/FieldScreen';
-import TaskScreen from './src/screens/TaskScreen';
-import ProfileScreen from './src/screens/ProfileScreen';
+import React, {useEffect, useRef, useState} from "react";
+import {NavigationContainer} from "@react-navigation/native";
+import {createNativeStackNavigator} from "@react-navigation/native-stack";
+import {RootSiblingParent} from "react-native-root-siblings";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import {ActivityIndicator, View} from "react-native";
+import {Provider as PaperProvider} from "react-native-paper";
+import {AuthProvider} from "@/hooks/useAuth";
+import {RootStackParamList} from "@/types/navigation";
+import {isTokenValid} from "@/utils/auth";
+import {navigationRef} from "@/navigation/navigationRef";
+import AppNavigator from "./src/navigation/AppNavigator";
+import {TabBarProvider} from "@/navigation/TabBarContext";
 
-const Tab = createBottomTabNavigator();
+const Stack = createNativeStackNavigator<RootStackParamList>();
 
 export default function App() {
+  const routeNameRef = useRef<string>("");
+  const [initialRoute, setInitialRoute] = useState<keyof RootStackParamList | null>(null);
+
+  useEffect(() => {
+    const initApp = async () => {
+      const agreed = await AsyncStorage.getItem("userAgreed");
+      if (agreed !== "true") {
+        setInitialRoute("Splash");
+        return;
+      }
+
+      const valid = await isTokenValid();
+      setInitialRoute(valid ? "Main" : "Login");
+    };
+
+    initApp();
+  }, []);
+
+  if (!initialRoute) {
+    return (
+      <View style={{flex: 1, justifyContent: "center", alignItems: "center"}}>
+        <ActivityIndicator size="large" />
+      </View>
+    );
+  }
+
   return (
-    <NavigationContainer>
-      <Tab.Navigator
-        screenOptions={({ route }) => ({
-          tabBarIcon: ({ focused, color, size }) => {
-            let iconName: keyof typeof Ionicons.glyphMap = 'home';
-
-            if (route.name === 'Map') {
-              iconName = focused ? 'map' : 'map-outline';
-            } else if (route.name === 'Fields') {
-              iconName = focused ? 'grid' : 'grid-outline';
-            } else if (route.name === 'Tasks') {
-              iconName = focused ? 'list' : 'list-outline';
-            } else if (route.name === 'Profile') {
-              iconName = focused ? 'person' : 'person-outline';
-            }
-
-            return <Ionicons name={iconName} size={size} color={color} />;
-          },
-          tabBarActiveTintColor: 'blue',
-          tabBarInactiveTintColor: 'gray',
-        })}
-      >
-        <Tab.Screen name="Map" component={MapScreen} options={{ title: '地图' }} />
-        <Tab.Screen name="Fields" component={FieldScreen} options={{ title: '地块' }} />
-        <Tab.Screen name="Tasks" component={TaskScreen} options={{ title: '任务' }} />
-        <Tab.Screen name="Profile" component={ProfileScreen} options={{ title: '我的' }} />
-      </Tab.Navigator>
-    </NavigationContainer>
+    <PaperProvider>
+      <RootSiblingParent>
+        <AuthProvider>
+          <NavigationContainer
+            ref={navigationRef}
+            onReady={() => {
+              routeNameRef.current = initialRoute;
+            }}>
+            <TabBarProvider>
+              <AppNavigator initialRouteName={initialRoute} />
+            </TabBarProvider>
+          </NavigationContainer>
+        </AuthProvider>
+      </RootSiblingParent>
+    </PaperProvider>
   );
 }

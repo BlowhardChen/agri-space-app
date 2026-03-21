@@ -7289,6 +7289,11 @@ react-native-root-siblings@^5.0.0:
   resolved "https://registry.npmmirror.com/react-native-root-siblings/-/react-native-root-siblings-5.0.1.tgz"
   integrity sha512-Ay3k/fBj6ReUkWX5WNS+oEAcgPLEGOK8n7K/L7D85mf3xvd8rm/b4spsv26E4HlFzluVx5HKbxEt9cl0wQ1u3g==
 
+react-native-root-siblings@^5.0.1:
+  version "5.0.1"
+  resolved "https://registry.npmmirror.com/react-native-root-siblings/-/react-native-root-siblings-5.0.1.tgz#97e050e5155228f65810fb1c466ff8e769c5272c"
+  integrity sha512-Ay3k/fBj6ReUkWX5WNS+oEAcgPLEGOK8n7K/L7D85mf3xvd8rm/b4spsv26E4HlFzluVx5HKbxEt9cl0wQ1u3g==
+
 react-native-root-toast@^4.0.1:
   version "4.0.1"
   resolved "https://registry.npmmirror.com/react-native-root-toast/-/react-native-root-toast-4.0.1.tgz"

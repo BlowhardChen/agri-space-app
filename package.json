@@ -1,5 +1,5 @@
 {
-  "name": "agriProject",
+  "name": "agrispace",
   "version": "0.0.1",
   "private": true,
   "scripts": {
@@ -13,7 +13,9 @@
     "lint:prettier": "prettier --write --loglevel warn \"**/*.{js,ts,json,tsx,md}\"",
     "lint": "yarn lint:eslint && yarn lint:prettier",
     "lint:fix": "yarn lint:eslint --fix && yarn lint:prettier",
-    "commit": "git-cz && git push"
+    "commit": "git-cz && git push",
+    "android:build:debug": "cd android && ./gradlew assembleDebug",
+    "android:build:release": "cd android && ./gradlew assembleRelease"
   },
   "dependencies": {
     "@react-native-async-storage/async-storage": "^3.0.1",
@@ -47,6 +49,7 @@
     "react-native-linear-gradient": "^2.8.3",
     "react-native-paper": "^5.15.0",
     "react-native-permissions": "^5.5.1",
+    "react-native-root-siblings": "^5.0.1",
     "react-native-root-toast": "^4.0.1",
     "react-native-safe-area-context": "^5.7.0",
     "react-native-screens": "^4.24.0",
