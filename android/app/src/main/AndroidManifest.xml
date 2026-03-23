@@ -24,19 +24,6 @@
       android:theme="@style/AppTheme"
       android:usesCleartextTraffic="${usesCleartextTraffic}"
       android:supportsRtl="true">
-      <!-- 高启用硬件加速（提升定位精度） -->
-      <meta-data
-          android:name="com.google.android.gms.version"
-          android:value="@integer/google_play_services_version" />
-      <!-- 高德地图 AK 配置 -->
-      <meta-data
-          android:name="com.amap.api.v2.apikey"
-          android:value="9e674383caef870041050d7e69bf4498" /> <!-- 替换成你申请的AK -->
-      <!-- 高德定位服务 -->
-      <service 
-          android:name="com.amap.api.location.APSService" 
-          android:enabled="true" 
-          android:exported="false"/>
 
       <activity
         android:name=".MainActivity"

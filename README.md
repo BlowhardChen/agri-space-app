@@ -1,6 +1,6 @@
 # Agri Space App
 
-圈地吧（AgriSpace App）
+量地吧（AgriSpace App）
 
 该项目是一个 **React Native + GIS 地图开发** 的跨平台农业地图应用，主要目标是实现农田地块管理、农事任务管理以及农机作业轨迹记录等功能，同时提供用户个人信息管理、设备注册与绑定等功能。
 
@@ -8,7 +8,7 @@
 
 - React Native
 - TypeScript
-- AMap Native SDK
+- Openlayers 地图库
 - react-native-amap3d
 - MobX 状态管理
 - GIS 农业地图架构设计
@@ -23,9 +23,8 @@
 
 React Native 移动端开发框架
 TypeScript 类型安全
-react-native-amap3d 高德地图 RN 封装
+Openlayers 地图库
 MobX 状态管理
-AMap SDK 原生地图能力
 
 ---
 
@@ -42,72 +41,113 @@ AMap SDK 原生地图能力
 
 ## 项目结构
 
+```
 agri-space-app
-│
 ├── src
-│ ├── map-sdk
-│ │ ├── MapView.tsx
-│ │ ├── MapController.ts
-│ │ ├── MapLayers.ts
-│ │ ├── MapTrack.ts
-│ │ ├── MapDraw.ts
-│ │ └── types.ts
-│ ├── core
-│ │ ├── location
-│ │ │ └── locationService.ts
-│ │ ├── sensor
-│ │ │ └── headingService.ts
-│ │ └── storage
-│ │ └── storageService.ts
-│ ├── domain
-│ │ ├── field
-│ │ │ └── Field.ts
-│ │ ├── task
-│ │ │ └── Task.ts
-│ │ ├── track
-│ │ │ └── Track.ts
-│ │ └── device
-│ │ └── Device.ts
-│ ├── services
-│ │ ├── fieldService.ts
-│ │ ├── taskService.ts
-│ │ └── trackService.ts
-│ ├── repositories
-│ │ ├── fieldRepository.ts
-│ │ ├── taskRepository.ts
-│ │ └── trackRepository.ts
-│ ├── stores
-│ │ ├── fieldStore.ts
-│ │ ├── taskStore.ts
-│ │ └── trackStore.ts
-│ ├── screens
-│ │ ├── MapScreen
-│ │ ├── FieldScreen
-│ │ ├── TaskScreen
-│ │ └── ProfileScreen
-│ ├── components
-│ │ ├── MapTools
-│ │ ├── TaskCard
-│ │ └── FieldItem
-│ └── utils
-├─ .editorconfig
-├─ .eslintrc.js
-├─ .gitignore
-├─ .prettierignore
-├─ .prettierrc.js
-├─ .watchmanconfig
-├─ app.json
-├─ App.tsx
-├─ babel.config.js
-├─ commitlint.config.js
-├─ Gemfile
-├─ index.js
-├─ jest.config.js
-├─ metro.config.js
-├─ package.json
-├─ README.md
-├─ tsconfig.json
-└─ yarn.lock
+│   ├── assets/
+│   │   └── images/
+│   │       ├── bootPage/
+│   │       └── tabBar/
+│   ├── core/
+│   │   ├── location/
+│   │   │   └── locationService.ts
+│   │   ├── sensor/
+│   │   │   └── headingService.ts
+│   │   └── storage/
+│   │       └── storageService.ts
+│   ├── domain/
+│   │   ├── device/
+│   │   │   └── Device.ts
+│   │   ├── field/
+│   │   │   └── Field.ts
+│   │   ├── task/
+│   │   │   └── Task.ts
+│   │   ├── track/
+│   │   │   └── Track.ts
+│   │   └── user/
+│   │       └── User.ts
+│   ├── hooks/
+│   │   ├── useAuth.ts
+│   │   └── useAuth.tsx
+│   ├── images/
+│   │   └── tabbar/
+│   ├── map-sdk/
+│   │   ├── MapController.ts
+│   │   ├── MapDraw.ts
+│   │   ├── MapLayers.ts
+│   │   ├── MapTrack.ts
+│   │   ├── MapView.tsx
+│   │   └── types.ts
+│   ├── navigation/
+│   │   ├── tabNavigators/
+│   │   │   ├── FieldStackNavigator.tsx
+│   │   │   ├── ProfileStackNavigator.tsx
+│   │   │   └── TaskStackNavigator.tsx
+│   │   ├── AppNavigator.tsx
+│   │   ├── BottomTabNavigator.tsx
+│   │   ├── TabBarContext.tsx
+│   │   └── navigationRef.ts
+│   ├── repositories/
+│   │   ├── deviceRepository.ts
+│   │   ├── fieldRepository.ts
+│   │   ├── taskRepository.ts
+│   │   ├── trackRepository.ts
+│   │   └── userRepository.ts
+│   ├── screens/
+│   │   ├── AuthScreen/
+│   │   │   └── LoginScreen.tsx
+│   │   ├── BootPage/
+│   │   │   ├── PrivacyPolicyScreen.tsx
+│   │   │   └── SplashScreen.tsx
+│   │   ├── FieldScreen/
+│   │   │   └── FieldManagementScreen.tsx
+│   │   ├── ProfileScreen/
+│   │   │   └── ProfileScreen.tsx
+│   │   └── TaskScreen/
+│   │       └── TaskManagementScreen.tsx
+│   ├── services/
+│   │   ├── deviceService.ts
+│   │   ├── fieldService.ts
+│   │   ├── taskService.ts
+│   │   ├── trackService.ts
+│   │   └── userService.ts
+│   ├── stores/
+│   │   ├── deviceStore.ts
+│   │   ├── fieldStore.ts
+│   │   ├── taskStore.ts
+│   │   ├── trackStore.ts
+│   │   └── userStore.ts
+│   ├── types/
+│   │   ├── navigation.d.ts
+│   │   ├── navigation.ts
+│   │   └── user.d.ts
+│   └── utils/
+│       ├── auth.ts
+│       └── tokenUtils.ts
+├── .bundle/
+├── __tests__/
+├── android/
+├── ios/
+├── .editorconfig
+├── .eslintrc.cjs
+├── .gitignore
+├── .prettierrc.cjs
+├── .watchmanconfig
+├── App.tsx
+├── Gemfile
+├── LICENSE
+├── README.md
+├── app.json
+├── babel.config.js
+├── commitlint.config.js
+├── index.js
+├── jest.config.js
+├── metro.config.js
+├── package-lock.json
+├── package.json
+├── tsconfig.json
+└── yarn.lock
+```
 
 ---
 
