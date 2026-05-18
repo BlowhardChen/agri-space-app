@@ -1,4 +1,4 @@
-package com.agriproject
+package com.agrispace
 
 import android.app.Application
 import com.facebook.react.PackageList

@@ -1,39 +1,61 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- */
+import React, {useEffect, useRef, useState} from "react";
+import {NavigationContainer} from "@react-navigation/native";
+import {createNativeStackNavigator} from "@react-navigation/native-stack";
+import {RootSiblingParent} from "react-native-root-siblings";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import {ActivityIndicator, View} from "react-native";
+import {Provider as PaperProvider} from "react-native-paper";
+import {AuthProvider} from "@/hooks/useAuth";
+import {RootStackParamList} from "@/types/navigation";
+import {isTokenValid} from "@/utils/auth";
+import {navigationRef} from "@/navigation/navigationRef";
+import AppNavigator from "./src/navigation/AppNavigator";
+import {TabBarProvider} from "@/navigation/TabBarContext";
 
-import {NewAppScreen} from "@react-native/new-app-screen";
-import {StatusBar, StyleSheet, useColorScheme, View} from "react-native";
-import {SafeAreaProvider, useSafeAreaInsets} from "react-native-safe-area-context";
+const Stack = createNativeStackNavigator<RootStackParamList>();
 
-function App() {
-  const isDarkMode = useColorScheme() === "dark";
+export default function App() {
+  const routeNameRef = useRef<string>("");
+  const [initialRoute, setInitialRoute] = useState<keyof RootStackParamList | null>(null);
+
+  useEffect(() => {
+    const initApp = async () => {
+      const agreed = await AsyncStorage.getItem("userAgreed");
+      if (agreed !== "true") {
+        setInitialRoute("Splash");
+        return;
+      }
+
+      const valid = await isTokenValid();
+      setInitialRoute(valid ? "Main" : "Login");
+    };
+
+    initApp();
+  }, []);
+
+  if (!initialRoute) {
+    return (
+      <View style={{flex: 1, justifyContent: "center", alignItems: "center"}}>
+        <ActivityIndicator size="large" />
+      </View>
+    );
+  }
 
   return (
-    <SafeAreaProvider>
-      <StatusBar barStyle={isDarkMode ? "light-content" : "dark-content"} />
-      <AppContent />
-    </SafeAreaProvider>
+    <PaperProvider>
+      <RootSiblingParent>
+        <AuthProvider>
+          <NavigationContainer
+            ref={navigationRef}
+            onReady={() => {
+              routeNameRef.current = initialRoute;
+            }}>
+            <TabBarProvider>
+              <AppNavigator initialRouteName={initialRoute} />
+            </TabBarProvider>
+          </NavigationContainer>
+        </AuthProvider>
+      </RootSiblingParent>
+    </PaperProvider>
   );
 }
-
-function AppContent() {
-  const safeAreaInsets = useSafeAreaInsets();
-
-  return (
-    <View style={styles.container}>
-      <NewAppScreen templateFileName="App.tsx" safeAreaInsets={safeAreaInsets} />
-    </View>
-  );
-}
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-});
-
-export default App;
