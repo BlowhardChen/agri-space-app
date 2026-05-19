@@ -9,6 +9,18 @@
 
 在修改文件前，先确认任务到底属于哪一块。
 
+# 规则读取说明
+
+本项目 AI Agent 规则以当前文件为主。
+
+当任务涉及 GIS / 地图 / OpenLayers / 坐标系 / 图层 / GeoJSON 时，必须参考：
+
+- /ai/gis.md
+
+当任务涉及 React Native / 页面组件 / Hook / WebView / Native 权限 / 移动端性能时，必须参考：
+
+- /ai/rn.md
+
 ## 事实来源
 
 - 以当前代码为准，不要优先相信 `README.md`。
@@ -63,7 +75,7 @@
 - 仓库里有两个同名但实现不同的鉴权 hook：
   - `src/hooks/useAuth.ts`
   - `src/hooks/useAuth.tsx`
-  在修改鉴权逻辑前，先确认当前实际被解析到的是哪一个。
+    在修改鉴权逻辑前，先确认当前实际被解析到的是哪一个。
 - `src/screens/AuthScreen/LoginScreen.tsx` 目前只是直接跳转到 `Main`，并没有真正持久化鉴权状态。
 - `src/screens/BootPage/SplashScreen.tsx` 目前只会在 `userAgreed === "true"` 时自动继续跳转。
 - JavaScript 层和原生层的应用命名目前不一致：

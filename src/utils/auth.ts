@@ -1,13 +1,31 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import AsyncStorage from "@react-native-async-storage/async-storage";
+
+const TOKEN_KEY = "userToken";
+const TOKEN_EXPIRES_AT_KEY = "tokenExpiresAt";
+const USER_INFO_KEY = "userInfo";
 
 export const isTokenValid = async (): Promise<boolean> => {
   try {
-    const token = await AsyncStorage.getItem('token');
-    // 这里应该检查token的有效性，比如验证过期时间等
-    // 目前简单返回是否存在token
-    return !!token;
+    const token = await AsyncStorage.getItem(TOKEN_KEY);
+    const expiresAt = await AsyncStorage.getItem(TOKEN_EXPIRES_AT_KEY);
+
+    if (!token || !expiresAt) {
+      return false;
+    }
+
+    return Date.now() < Number(expiresAt);
   } catch (error) {
-    console.error('检查token失败:', error);
+    console.error("Failed to validate token:", error);
     return false;
+  }
+};
+
+export const getUserInfoFromStorage = async () => {
+  try {
+    const raw = await AsyncStorage.getItem(USER_INFO_KEY);
+    return raw ? JSON.parse(raw) : null;
+  } catch (error) {
+    console.error("Failed to load user info:", error);
+    return null;
   }
 };

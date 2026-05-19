@@ -1,4 +1,4 @@
-package com.agrispace
+package com.blowhardchen.agrispace
 
 import android.app.Application
 import com.facebook.react.PackageList

@@ -1,4 +1,4 @@
-package com.agrispace
+package com.blowhardchen.agrispace
 
 import com.facebook.react.ReactActivity
 import com.facebook.react.ReactActivityDelegate
