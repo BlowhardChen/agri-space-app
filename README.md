@@ -1,6 +1,6 @@
 # Agri Space App
 
-量地吧（AgriSpace App）
+农域（AgriSpace App）
 
 该项目是一个 **React Native + GIS 地图开发** 的跨平台农业地图应用，主要目标是实现农田地块管理、农事任务管理以及农机作业轨迹记录等功能，同时提供用户个人信息管理、设备注册与绑定等功能。
 

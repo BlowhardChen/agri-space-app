@@ -94,8 +94,7 @@
   - `yarn test`
   - `yarn lint:eslint`
   - `yarn format:check`
-- 修改 `openlayers-react-native/` 后，到该目录下运行 `npm run build`。
-- 如果无法运行原生构建、真机验证或依赖安装，需要在交付说明里明确说清楚。
+- 不需要运行构建服务进行检查，只做代码层的校验即可
 
 ## 按任务类型的默认切入点
 
