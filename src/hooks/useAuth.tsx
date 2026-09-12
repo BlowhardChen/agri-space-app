@@ -1,6 +1,4 @@
-import {createContext, useContext, useEffect, useState} from "react";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import {getUserInfoFromStorage} from "@/utils/auth";
+import React, {createContext, useContext, useEffect, useState} from "react";
 import {UserInfo} from "@/types/user";
 import {getToken, removeToken, setToken, setUserInfo} from "@/utils/tokenUtils";
 
@@ -18,23 +16,18 @@ export const AuthProvider: React.FC<{children: React.ReactNode}> = ({children}) 
   useEffect(() => {
     const initAuth = async () => {
       const token = await getToken();
-      const expiresAt = await AsyncStorage.getItem("tokenExpiresAt");
-      if (token && expiresAt && Date.now() < Number(expiresAt)) {
-        const info = await getUserInfoFromStorage();
-        setIsLoggedIn(true);
-      }
+      setIsLoggedIn(!!token);
     };
+
     initAuth();
   }, []);
 
-  // 登录
   const login = async (token: string, userInfo: UserInfo) => {
     await setToken(token);
     await setUserInfo(userInfo);
     setIsLoggedIn(true);
   };
 
-  // 退出登录
   const logout = async () => {
     await removeToken();
     setIsLoggedIn(false);
@@ -45,6 +38,10 @@ export const AuthProvider: React.FC<{children: React.ReactNode}> = ({children}) 
 
 export const useAuth = () => {
   const context = useContext(AuthContext);
-  if (!context) throw new Error("useAuth 必须在 AuthProvider 内使用");
+
+  if (!context) {
+    throw new Error("useAuth must be used within an AuthProvider");
+  }
+
   return context;
 };
